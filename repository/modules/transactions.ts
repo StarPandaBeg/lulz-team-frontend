@@ -23,6 +23,11 @@ class TransactionsModule extends HttpFactory {
     );
   }
 
+  getById(tid: number, id: number) {
+    const resource = this._getResource(id) + `/${tid}`;
+    return this.call<Transaction>("GET", resource);
+  }
+
   private _getResource(id: number) {
     return this.Resource.replace("{id}", id.toString());
   }

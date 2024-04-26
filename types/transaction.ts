@@ -6,9 +6,9 @@ export type Transaction = {
   operation_type: "Debit" | "Credit";
   operation_category: string;
   status: string;
-  creation_date: string;
-  authorization_date: string;
-  transaction_date: string;
+  creation_date: string | null;
+  authorization_date: string | null;
+  transaction_date: string | null;
   original_operation_id: string;
   operation_amount_in_currency: string;
   operation_currency: string;
