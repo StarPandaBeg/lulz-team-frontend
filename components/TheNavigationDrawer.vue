@@ -7,11 +7,11 @@
     order="-1"
   >
     <v-list>
-      <!-- <v-list-item
+      <v-list-item
         prepend-avatar="/images/stpnd.jpg"
         title="Константин Шмураков"
         subtitle="kostya.shmurakov@mail.ru"
-      /> -->
+      />
     </v-list>
     <v-divider />
     <v-list nav>
