@@ -1,6 +1,7 @@
 import { $fetch, type FetchOptions } from "ofetch";
 import CounterpartiesModule from "~/repository/modules/counterparties";
 import CurrenciesModule from "~/repository/modules/currencies";
+import ReceiptsModule from "~/repository/modules/receipts";
 import TransactionsModule from "~/repository/modules/transactions";
 import TripsModule from "~/repository/modules/trips";
 
@@ -9,6 +10,7 @@ interface IApiInstance {
   transactions: TransactionsModule;
   currencies: CurrenciesModule;
   counterparties: CounterpartiesModule;
+  receipts: ReceiptsModule;
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -22,6 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     transactions: new TransactionsModule(fetcher),
     currencies: new CurrenciesModule(fetcher),
     counterparties: new CounterpartiesModule(fetcher),
+    receipts: new ReceiptsModule(fetcher),
   };
   return {
     provide: {
