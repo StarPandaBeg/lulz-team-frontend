@@ -22,6 +22,11 @@ class TripsModule extends HttpFactory {
       fetchOptions
     );
   }
+
+  getById(id: number) {
+    const resource = `${this.Resource}/${id}`;
+    return this.call<Trip>("GET", resource);
+  }
 }
 
 export default TripsModule;

@@ -30,3 +30,8 @@ export async function get_trips_total(db: ReturnType<typeof useDatabase>) {
   // @ts-expect-error
   return parseInt(result.rows[0].count);
 }
+
+export async function get_trip(db: ReturnType<typeof useDatabase>, id: number) {
+  const result = await db.sql`SELECT * FROM komandirovki WHERE id=${id}`;
+  return result.rows![0] as Trip;
+}
