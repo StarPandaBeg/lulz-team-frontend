@@ -36,7 +36,7 @@ export type Transaction = {
   tax_payment_basis: string;
   tax_period_customs_code: string;
   tax_document_number: string;
-  tax_document_date: string;
+  tax_document_date: string | null;
   tax_payment_type: string;
 
   confirmation_status: string;

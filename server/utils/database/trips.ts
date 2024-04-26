@@ -1,6 +1,6 @@
 import { Trip } from "~/types/trip";
 import { useDatabase } from "../database";
-import moment from "moment";
+import { normalizeDate } from "../util/util";
 
 export async function get_trips(
   db: ReturnType<typeof useDatabase>,
@@ -15,10 +15,8 @@ export async function get_trips(
     rows.map(async (row) => {
       const { date_start, date_end, ...data } = row;
 
-      // @ts-expect-error
-      data.date_start = moment(date_start).format("YYYY-MM-DD");
-      // @ts-expect-error
-      data.date_end = moment(date_end).format("YYYY-MM-DD");
+      row.date_start = normalizeDate(row.date_start.toString())!;
+      row.date_end = normalizeDate(row.date_end.toString())!;
 
       return data as Trip;
     })

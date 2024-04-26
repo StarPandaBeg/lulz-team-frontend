@@ -13,14 +13,11 @@ export async function get_transactions_for(
 
   return Promise.all(
     rows.map(async (row) => {
-      // const { date_start, date_end, ...data } = row;
-
-      // ts-expect-error
-      // data.date_start = moment(date_start).format("YYYY-MM-DD");
-      // ts-expect-error
-      // data.date_end = moment(date_end).format("YYYY-MM-DD");
+      row.creation_date = normalizeDate(row.creation_date);
+      row.authorization_date = normalizeDate(row.authorization_date);
+      row.transaction_date = normalizeDate(row.transaction_date);
+      row.tax_document_date = normalizeDate(row.tax_document_date);
       row.confirmation_status = "fail";
-
       return row;
     })
   );
