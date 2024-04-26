@@ -5,7 +5,7 @@
     </template>
     <v-spacer />
     <ClientOnly>
-      <!-- <Clock class="d-none d-sm-block" /> -->
+      <Clock class="d-none d-sm-block" />
     </ClientOnly>
     <v-spacer />
   </v-app-bar>
