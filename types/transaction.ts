@@ -1,4 +1,4 @@
-export type Transaction = {
+export type Transaction = Counterparty & {
   id: number;
   komandirovka_id: number;
   account_number: string;
@@ -13,13 +13,7 @@ export type Transaction = {
   operation_amount_in_currency: string;
   operation_currency: string;
   amount_in_account_currency: string;
-  counterparty: string;
-  counterparty_inn: string;
-  counterparty_kpp: string;
   counterparty_account: string;
-  counterparty_bank_bik: string;
-  counterparty_bank_corr_account: string;
-  counterparty_bank_name: string;
   payment_purpose: string;
   payment_number: string;
   sequence: string;
@@ -40,4 +34,13 @@ export type Transaction = {
   tax_payment_type: string;
 
   confirmation_status: string;
+};
+
+export type Counterparty = {
+  counterparty: string;
+  counterparty_inn: string;
+  counterparty_kpp: string;
+  counterparty_bank_bik: string;
+  counterparty_bank_corr_account: string;
+  counterparty_bank_name: string;
 };
