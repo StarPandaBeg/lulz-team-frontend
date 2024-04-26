@@ -15,6 +15,12 @@
     </v-list>
     <v-divider />
     <v-list nav>
+      <v-list-item
+        prepend-icon="mdi-account-group"
+        title="Командировки"
+        link
+        to="/"
+      />
       <!-- <v-list-item
         prepend-icon="mdi-domain"
         title="Компании"
