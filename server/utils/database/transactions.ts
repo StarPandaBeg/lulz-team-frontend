@@ -45,3 +45,11 @@ export async function get_transaction(
 
   return row;
 }
+export async function count_nonconfirmed_transactions_for(
+  db: ReturnType<typeof useDatabase>,
+  id: number
+) {
+  const result = await db.sql`SELECT count_noncorfirmed_transactions(${id})`;
+  // @ts-expect-error
+  return parseInt(result.rows[0].count_noncorfirmed_transactions);
+}

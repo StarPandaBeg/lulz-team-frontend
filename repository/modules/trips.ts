@@ -27,6 +27,11 @@ class TripsModule extends HttpFactory {
     const resource = `${this.Resource}/${id}`;
     return this.call<Trip>("GET", resource);
   }
+
+  nonConfirmed(id: number) {
+    const resource = this.Resource + `/${id}/non_confirmed`;
+    return this.call<number>("GET", resource);
+  }
 }
 
 export default TripsModule;
