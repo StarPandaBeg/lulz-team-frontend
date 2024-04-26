@@ -1,6 +1,6 @@
 import type { FetchOptions } from "ofetch";
 import HttpFactory from "../factory";
-import type { PaginatedResult } from "~/types/common/result";
+import type { PaginatedResult, StatusResult } from "~/types/common/result";
 import type { Transaction } from "~/types/transaction";
 
 export type GetParameterBag = {
@@ -26,6 +26,15 @@ class TransactionsModule extends HttpFactory {
   getById(tid: number, id: number) {
     const resource = this._getResource(id) + `/${tid}`;
     return this.call<Transaction>("GET", resource);
+  }
+
+  edit(transaction: Transaction, tid: number, id: number) {
+    const resource = this._getResource(id) + `/${tid}`;
+    return this.call<StatusResult>(
+      "PUT",
+      resource,
+      JSON.stringify({ transaction })
+    );
   }
 
   private _getResource(id: number) {

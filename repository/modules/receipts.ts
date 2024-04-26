@@ -8,6 +8,11 @@ class ReceiptsModule extends HttpFactory {
     const resource = `${this.Resource}/${id}`;
     return this.call<Receipt>("GET", resource);
   }
+
+  edit(receipt: Receipt, id: number) {
+    const resource = `${this.Resource}/${id}`;
+    return this.call<Receipt>("PUT", resource, JSON.stringify({ receipt }));
+  }
 }
 
 export default ReceiptsModule;
