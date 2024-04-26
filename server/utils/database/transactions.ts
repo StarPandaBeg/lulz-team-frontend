@@ -1,5 +1,5 @@
 import { Transaction } from "~/types/transaction";
-import { normalizeDate } from "../util/util";
+import { normalizeDate } from "~/util/util";
 
 export async function get_transactions_for(
   db: ReturnType<typeof useDatabase>,

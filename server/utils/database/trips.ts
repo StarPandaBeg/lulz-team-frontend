@@ -1,6 +1,6 @@
 import { Trip } from "~/types/trip";
 import { useDatabase } from "../database";
-import { normalizeDate } from "../util/util";
+import { normalizeDate } from "~/util/util";
 
 export async function get_trips(
   db: ReturnType<typeof useDatabase>,
