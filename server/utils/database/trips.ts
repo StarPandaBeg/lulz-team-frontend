@@ -13,12 +13,10 @@ export async function get_trips(
 
   return Promise.all(
     rows.map(async (row) => {
-      const { date_start, date_end, ...data } = row;
-
       row.date_start = normalizeDate(row.date_start.toString())!;
       row.date_end = normalizeDate(row.date_end.toString())!;
 
-      return data as Trip;
+      return row as Trip;
     })
   );
 }
