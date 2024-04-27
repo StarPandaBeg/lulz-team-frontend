@@ -36,6 +36,25 @@ const getReceipt = async (id: number) => {
     };
   }
 };
+const parseReceipt = async (file: File) => {
+  try {
+    const result = await $api.parser.qr(file);
+    Object.assign(receipt.value, result);
+    receipt.value.fd = result.i;
+    transaction.value.amount_in_account_currency = result.s;
+    transaction.value.authorization_date = moment(result.t).format(
+      "YYYY-MM-DD"
+    );
+
+    toast.success("Данные автоматически заполнены!");
+    tab.value = "receipt";
+  } catch (e) {
+    console.log(e);
+    toast.error(
+      "К сожалению, не удалось обработать файл. Введите данные вручную"
+    );
+  }
+};
 
 const trip = ref<Trip>(await $api.trips.getById(id));
 const transaction = ref<Transaction>(await $api.transactions.getById(tid, id));
@@ -192,7 +211,7 @@ onMounted(() => {
           <VWindowItem value="upload">
             <VRow>
               <VCol>
-                <Dropzone />
+                <Dropzone accept="image/png" @upload="parseReceipt" />
                 <p class="pt-3 text-medium-emphasis">
                   Вы можете выбрать файл с чеком, чтобы автоматически заполнить
                   некоторые поля
