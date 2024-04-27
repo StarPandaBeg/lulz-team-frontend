@@ -32,6 +32,16 @@ const transactions = ref<PaginatedResult<Transaction>>(
 const nonConfirmed = ref<number>(await $api.trips.nonConfirmed(id));
 const nextNonConfirmedId = ref<number>(await $api.transactions.next(id));
 
+const confirmationOpened = ref<boolean>();
+const openReportConfirmation = () => {
+  confirmationOpened.value = true;
+};
+const generateReport = () => {
+  location.assign(`/api/parser/export_to_excel/${id}`);
+  confirmationOpened.value = false;
+  toast.success("Отчёт сгенерирован. Проверьте папку загрузок.");
+};
+
 const receiptFindOpened = ref<boolean>();
 const receiptFindLoading = ref<boolean>(false);
 
@@ -83,6 +93,9 @@ onMounted(() => {
       variant: "outlined",
     },
     text: "Отчет",
+    events: {
+      click: openReportConfirmation,
+    },
   });
   templateStore.addAction({
     props: {
@@ -196,5 +209,6 @@ const headers = [
       :loading="receiptFindLoading"
       @save="receiptSearch"
     />
+    <ReportConfirmation v-model="confirmationOpened" @save="generateReport" />
   </div>
 </template>

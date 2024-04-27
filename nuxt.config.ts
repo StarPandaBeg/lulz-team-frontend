@@ -30,6 +30,9 @@ export default defineNuxtConfig({
   },
   routeRules: {
     "/api/parser/qr": { proxy: `${process.env.PARSER_BASE_URL}/qr` },
+    "/api/parser/export_to_excel/**": {
+      proxy: `${process.env.PARSER_BASE_URL}/export_to_excel/**`,
+    },
     "/api/parser/add_new_komandirovaniy": {
       proxy: `${process.env.PARSER_BASE_URL}/add_new_komandirovaniy`,
     },
