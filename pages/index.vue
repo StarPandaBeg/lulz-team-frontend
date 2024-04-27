@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useTitledPageStore } from "~/store/titled";
 import type { PaginatedResult } from "~/types/common/result";
-import type { Trip } from "~/types/trip";
+import type { TripExtended } from "~/types/trip";
 
 definePageMeta({
   layout: "titled",
@@ -13,7 +13,7 @@ useHead({
 const templateStore = useTitledPageStore();
 const { $api } = useNuxtApp();
 
-const data = ref<PaginatedResult<Trip>>(
+const data = ref<PaginatedResult<TripExtended>>(
   await $api.trips.get({
     page: 1,
     perPage: 10,
@@ -65,6 +65,13 @@ const headers = [
     hover
     @update:options="updateTable"
   >
+    <template #item.status="{ item }">
+      <!-- @vue-expect-error -->
+      <VChip v-if="item.failed > 0" color="error">
+        Есть неподтвержденные записи ({{ item.failed }})
+      </VChip>
+      <VChip v-else color="success"> ОК </VChip>
+    </template>
     <template #item.actions="{ item }">
       <v-btn
         :to="`/manage/${item.id}`"

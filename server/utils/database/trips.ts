@@ -1,4 +1,4 @@
-import { Trip } from "~/types/trip";
+import { Trip, TripExtended } from "~/types/trip";
 import { useDatabase } from "../database";
 import { normalizeDate } from "~/util/util";
 
@@ -9,7 +9,7 @@ export async function get_trips(
 ) {
   const result =
     await db.sql`SELECT * FROM get_paginated_trips(${page}, ${perPage})`;
-  const rows = result.rows as Trip[];
+  const rows = result.rows as TripExtended[];
 
   return Promise.all(
     rows.map(async (row) => {

@@ -1,6 +1,6 @@
 import type { FetchOptions } from "ofetch";
 import HttpFactory from "../factory";
-import type { Trip } from "~/types/trip";
+import type { Trip, TripExtended } from "~/types/trip";
 import type { PaginatedResult } from "~/types/common/result";
 
 export type GetParameterBag = {
@@ -15,7 +15,7 @@ class TripsModule extends HttpFactory {
     const fetchOptions: FetchOptions<"json"> = {
       query: params,
     };
-    return this.call<PaginatedResult<Trip>>(
+    return this.call<PaginatedResult<TripExtended>>(
       "GET",
       this.Resource,
       undefined,
