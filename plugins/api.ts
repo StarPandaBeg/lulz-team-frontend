@@ -1,4 +1,5 @@
 import { $fetch, type FetchOptions } from "ofetch";
+import AuthModule from "~/repository/modules/auth";
 import CounterpartiesModule from "~/repository/modules/counterparties";
 import CurrenciesModule from "~/repository/modules/currencies";
 import ParserModule from "~/repository/modules/parser";
@@ -7,6 +8,7 @@ import TransactionsModule from "~/repository/modules/transactions";
 import TripsModule from "~/repository/modules/trips";
 
 interface IApiInstance {
+  auth: AuthModule;
   trips: TripsModule;
   transactions: TransactionsModule;
   currencies: CurrenciesModule;
@@ -22,6 +24,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const fetcher = $fetch.create(fetchOptions);
 
   const modules: IApiInstance = {
+    auth: new AuthModule(fetcher),
     trips: new TripsModule(fetcher),
     transactions: new TransactionsModule(fetcher),
     currencies: new CurrenciesModule(fetcher),

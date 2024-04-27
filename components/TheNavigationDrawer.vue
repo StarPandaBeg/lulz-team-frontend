@@ -42,7 +42,14 @@
     </v-list>
 
     <template #append>
-      <v-list> </v-list>
+      <v-list>
+        <v-list-item
+          prepend-icon="mdi-logout"
+          title="Выход"
+          link
+          to="/logout"
+        />
+      </v-list>
     </template>
   </v-navigation-drawer>
 </template>
