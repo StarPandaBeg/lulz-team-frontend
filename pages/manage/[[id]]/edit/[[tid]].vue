@@ -43,6 +43,13 @@ const parseReceipt = async (file: File) => {
   try {
     loading.value = true;
 
+    try {
+      const gptResult = await $api.parser.gpt(file);
+      transaction.value.counterparty = gptResult.organisation_name;
+      transaction.value.organization_address = gptResult.address;
+      transaction.value.card_number = gptResult.card_number;
+    } catch (e) {}
+
     const result = await $api.parser.qr(file);
     const date = moment(result.t).format("YYYY-MM-DD");
     if (

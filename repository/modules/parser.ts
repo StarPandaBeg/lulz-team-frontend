@@ -1,4 +1,4 @@
-import type { QrParseResult } from "~/types/parser";
+import type { GptParseResult, QrParseResult } from "~/types/parser";
 import HttpFactory from "../factory";
 import type { StatusResult } from "~/types/common/result";
 
@@ -20,6 +20,13 @@ class ParserModule extends HttpFactory {
     data.append("file", file);
 
     return this.call<StatusResult>("POST", resource, data);
+  }
+
+  gpt(file: File) {
+    const resource = `${this.Resource}/parseimg`;
+    const data = new FormData();
+    data.append("file", file);
+    return this.call<GptParseResult>("POST", resource, data);
   }
 }
 
