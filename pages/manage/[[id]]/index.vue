@@ -33,6 +33,7 @@ const nonConfirmed = ref<number>(await $api.trips.nonConfirmed(id));
 const nextNonConfirmedId = ref<number>(await $api.transactions.next(id));
 
 const confirmationOpened = ref<boolean>();
+const autoloadOpened = ref<boolean>();
 const openReportConfirmation = () => {
   confirmationOpened.value = true;
 };
@@ -75,6 +76,10 @@ const receiptSearch = async (file: File) => {
   receiptFindLoading.value = false;
 };
 
+const openAutoload = () => {
+  autoloadOpened.value = true;
+};
+
 onMounted(() => {
   templateStore.setTitle("Просмотр записи");
   templateStore.clearActions();
@@ -104,6 +109,15 @@ onMounted(() => {
     text: "Поиск по чеку",
     events: {
       click: openReceiptSearch,
+    },
+  });
+  templateStore.addAction({
+    props: {
+      color: "primary",
+    },
+    text: "Автозагрузка",
+    events: {
+      click: openAutoload,
     },
   });
 });
@@ -210,5 +224,6 @@ const headers = [
       @save="receiptSearch"
     />
     <ReportConfirmation v-model="confirmationOpened" @save="generateReport" />
+    <AutoloadDialog v-model="autoloadOpened" :id="id" />
   </div>
 </template>
