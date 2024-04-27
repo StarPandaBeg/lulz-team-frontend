@@ -2,6 +2,7 @@
 import moment from "moment";
 import { useToast } from "vue-toastification";
 import { useTitledPageStore } from "~/store/titled";
+import type { QrParseResult } from "~/types/parser";
 import type { Receipt } from "~/types/receipt";
 import type { Transaction } from "~/types/transaction";
 import type { Trip } from "~/types/trip";
@@ -41,12 +42,17 @@ const parseReceipt = async (file: File) => {
     loading.value = true;
 
     const result = await $api.parser.qr(file);
-    Object.assign(receipt.value, result);
-    receipt.value.fd = result.i;
-    transaction.value.amount_in_account_currency = result.s;
-    transaction.value.authorization_date = moment(result.t).format(
-      "YYYY-MM-DD"
-    );
+    const date = moment(result.t).format("YYYY-MM-DD");
+    if (
+      result.s != transaction.value.amount_in_account_currency ||
+      date != transaction.value.authorization_date
+    ) {
+      qr.value = result;
+      receiptConfirmationOpened.value = true;
+      loading.value = false;
+      return;
+    }
+    fillReceipt(result);
 
     toast.success("Данные автоматически заполнены!");
     tab.value = "receipt";
@@ -58,6 +64,18 @@ const parseReceipt = async (file: File) => {
   }
   loading.value = false;
 };
+const confirmReceipt = () => {
+  receiptConfirmationOpened.value = false;
+  fillReceipt(qr.value!);
+  toast.success("Данные автоматически заполнены!");
+  tab.value = "receipt";
+};
+const fillReceipt = (result: QrParseResult) => {
+  Object.assign(receipt.value, result);
+  receipt.value.fd = result.i;
+  transaction.value.amount_in_account_currency = result.s;
+  transaction.value.authorization_date = moment(result.t).format("YYYY-MM-DD");
+};
 
 const trip = ref<Trip>(await $api.trips.getById(id));
 const transaction = ref<Transaction>(await $api.transactions.getById(tid, id));
@@ -65,6 +83,10 @@ const receipt = ref<Receipt>(await getReceipt(tid));
 const currencies = ref(await $api.currencies.list());
 const confirmationOpened = ref<boolean>();
 const loading = ref<boolean>();
+
+const qr = ref<QrParseResult>();
+const receiptConfirmationOpened = ref<boolean>();
+
 const router = useRouter();
 
 type TabValues =
@@ -675,6 +697,13 @@ onMounted(() => {
       :transaction="transaction"
       :receipt="receipt"
       @save="save"
+    />
+    <ReceiptConfirmation
+      v-model="receiptConfirmationOpened"
+      :transaction="transaction"
+      :receipt="receipt"
+      :qr="qr!"
+      @save="confirmReceipt"
     />
   </VForm>
 </template>
