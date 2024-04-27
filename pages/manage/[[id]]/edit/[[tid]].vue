@@ -26,6 +26,7 @@ const route = useRoute();
 
 const id = parseInt(route.params.id as string);
 const tid = parseInt(route.params.tid as string);
+const viewedFile = ref<File>();
 
 const getReceipt = async (id: number) => {
   try {
@@ -40,6 +41,7 @@ const getReceipt = async (id: number) => {
   }
 };
 const parseReceipt = async (file: File) => {
+  viewedFile.value = file;
   try {
     loading.value = true;
 
@@ -175,6 +177,11 @@ const nextOrSave = async () => {
   if (isLast.value) return trySave();
   next();
 };
+
+const receiptUrl = computed(() => {
+  if (viewedFile.value == undefined) return null;
+  return URL.createObjectURL(viewedFile.value);
+});
 
 const tryFillCounterparty = async () => {
   try {
@@ -730,5 +737,6 @@ onMounted(() => {
       :qr="qr!"
       @save="confirmReceipt"
     />
+    <ReceiptView v-if="receiptUrl != null" :src="receiptUrl!" />
   </VForm>
 </template>
