@@ -1,22 +1,23 @@
-<script>
-import { useDropzone } from "vue3-dropzone";
+<script lang="ts" setup>
+import { useToast } from "vue-toastification";
+import { useDropzone, type FileRejectReason } from "vue3-dropzone";
 
-export default {
-  setup() {
-    function onDrop(acceptFiles, rejectReasons) {
-      console.log(acceptFiles);
-      console.log(rejectReasons);
-    }
+const emits = defineEmits(["upload"]);
+const props = defineProps<{
+  accept: string;
+}>();
+const toast = useToast();
 
-    const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
-
-    return {
-      getRootProps,
-      getInputProps,
-      ...rest,
-    };
-  },
+const onDrop = (acceptFiles: File[], rejectReasons: FileRejectReason[]) => {
+  acceptFiles.forEach((file) => emits("upload", file));
+  rejectReasons.forEach((reason) => toast.error(reason.errors[0].message));
 };
+
+const { getRootProps, getInputProps, ...rest } = useDropzone({
+  onDrop,
+  accept: props.accept,
+});
+const isDragActive = rest.isDragActive;
 </script>
 
 <template>
