@@ -49,6 +49,10 @@ const headers = [
     title: "Статус",
   },
   {
+    key: "total",
+    title: "Итого",
+  },
+  {
     key: "actions",
     title: "Действия",
     sortable: false,
