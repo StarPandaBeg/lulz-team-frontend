@@ -14,6 +14,7 @@ export default defineNuxtConfig({
       });
     },
     "@pinia/nuxt",
+    "nuxt-highcharts",
   ],
   vite: {
     vue: {

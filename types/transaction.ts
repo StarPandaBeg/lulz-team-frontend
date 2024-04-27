@@ -44,3 +44,9 @@ export type Counterparty = {
   counterparty_bank_corr_account: string;
   counterparty_bank_name: string;
 };
+
+export type ChartData = {
+  date: string;
+  debit: number;
+  credit: number;
+};

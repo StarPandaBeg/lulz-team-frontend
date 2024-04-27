@@ -4,7 +4,7 @@ import { useToast } from "vue-toastification";
 import { useBulkStore } from "~/store/bulk";
 import { useTitledPageStore } from "~/store/titled";
 import type { PaginatedResult } from "~/types/common/result";
-import type { Transaction } from "~/types/transaction";
+import type { ChartData, Transaction } from "~/types/transaction";
 import type { Trip } from "~/types/trip";
 import operationTypes from "~/util/operationTypes";
 import transactionStatuses from "~/util/transactionStatuses";
@@ -31,6 +31,8 @@ const transactions = ref<PaginatedResult<Transaction>>(
 );
 const nonConfirmed = ref<number>(await $api.trips.nonConfirmed(id));
 const nextNonConfirmedId = ref<number>(await $api.transactions.next(id));
+
+const chartData = ref<ChartData[]>(await $api.trips.chartData(id));
 
 const confirmationOpened = ref<boolean>();
 const autoloadOpened = ref<boolean>();
@@ -149,6 +151,56 @@ const headers = [
     align: "end",
   },
 ];
+
+const options = computed(() => ({
+  title: {
+    text: "Общие доходы и расходы",
+  },
+  xAxis: [
+    {
+      title: {
+        text: "Дата",
+      },
+      categories: chartData.value.map((data) => {
+        return data.date;
+      }),
+    },
+  ],
+  yAxis: [
+    {
+      title: {
+        text: "Сумма (в рублях)",
+        style: {
+          color: "#000000",
+        },
+      },
+    },
+  ],
+  series: [
+    {
+      type: "line",
+      name: "Расходы",
+      data: chartData.value.map((data) => {
+        return {
+          name: data.date,
+          y: data.debit,
+        };
+      }),
+      color: "red",
+    },
+    {
+      type: "line",
+      name: "Доходы",
+      data: chartData.value.map((data) => {
+        return {
+          name: data.date,
+          y: data.credit,
+        };
+      }),
+      color: "green",
+    },
+  ],
+}));
 </script>
 
 <template>
@@ -186,6 +238,7 @@ const headers = [
         </tr>
       </tbody>
     </VTable>
+    <highchart :options="options" />
     <VDataTableServer
       :headers="headers"
       :items="transactions.data"

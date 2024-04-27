@@ -1,6 +1,6 @@
 import moment from "moment";
 import { QrParseResult } from "~/types/parser";
-import { Transaction } from "~/types/transaction";
+import { ChartData, Transaction } from "~/types/transaction";
 import { normalizeDate } from "~/util/util";
 
 export async function get_transactions_for(
@@ -152,4 +152,29 @@ export async function edit_transaction(
         : null
     }
   WHERE id = ${id};`;
+}
+
+export async function get_chart_data(
+  db: ReturnType<typeof useDatabase>,
+  id: number
+) {
+  const result = await db.sql`SELECT authorization_date as date, 
+  SUM(CASE WHEN operation_type = 'Debit' THEN round(CAST(amount_in_account_currency as numeric), 2) ELSE 0 END) as debit,
+  SUM(CASE WHEN operation_type = 'Credit' THEN round(CAST(amount_in_account_currency as numeric), 2) ELSE 0 END) as credit 
+  FROM transactions
+  WHERE komandirovka_id = ${id}
+  group by authorization_date
+  order by date`;
+  const rows = result.rows! as ChartData[];
+
+  rows.forEach((r) => {
+    r.date = moment(r.date).format("YYYY-MM-DD");
+
+    // @ts-expect-error
+    r.credit = parseFloat(r.credit);
+    // @ts-expect-error
+    r.debit = parseFloat(r.debit);
+  });
+
+  return rows;
 }

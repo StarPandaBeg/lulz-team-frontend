@@ -2,6 +2,7 @@ import type { FetchOptions } from "ofetch";
 import HttpFactory from "../factory";
 import type { Trip, TripExtended } from "~/types/trip";
 import type { PaginatedResult } from "~/types/common/result";
+import type { ChartData } from "~/types/transaction";
 
 export type GetParameterBag = {
   page: number;
@@ -35,6 +36,11 @@ class TripsModule extends HttpFactory {
 
   create(trip: Trip) {
     return this.call<Trip>("POST", this.Resource, JSON.stringify(trip));
+  }
+
+  chartData(id: number) {
+    const resource = this.Resource + `/${id}/chart`;
+    return this.call<ChartData[]>("GET", resource);
   }
 }
 
