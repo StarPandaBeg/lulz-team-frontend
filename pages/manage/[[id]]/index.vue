@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import moment from "moment";
+import { useToast } from "vue-toastification";
 import { useBulkStore } from "~/store/bulk";
 import { useTitledPageStore } from "~/store/titled";
 import type { PaginatedResult } from "~/types/common/result";
@@ -7,6 +8,7 @@ import type { Transaction } from "~/types/transaction";
 import type { Trip } from "~/types/trip";
 import operationTypes from "~/util/operationTypes";
 import transactionStatuses from "~/util/transactionStatuses";
+import { jsonToQueryString } from "~/util/util";
 
 definePageMeta({
   layout: "titled",
@@ -19,6 +21,8 @@ const templateStore = useTitledPageStore();
 const bulk = useBulkStore();
 const { $api } = useNuxtApp();
 const route = useRoute();
+const router = useRouter();
+const toast = useToast();
 
 const id = parseInt(route.params.id as string);
 const data = ref<Trip>(await $api.trips.getById(id));
@@ -28,6 +32,9 @@ const transactions = ref<PaginatedResult<Transaction>>(
 const nonConfirmed = ref<number>(await $api.trips.nonConfirmed(id));
 const nextNonConfirmedId = ref<number>(await $api.transactions.next(id));
 
+const receiptFindOpened = ref<boolean>();
+const receiptFindLoading = ref<boolean>(false);
+
 const updateTable = async (options: { page: number; itemsPerPage: number }) => {
   transactions.value = await $api.transactions.get(id, {
     page: options.page,
@@ -36,6 +43,26 @@ const updateTable = async (options: { page: number; itemsPerPage: number }) => {
 };
 const withBulk = (state: boolean) => {
   bulk.setBulkEdit(state);
+};
+
+const openReceiptSearch = () => {
+  receiptFindOpened.value = true;
+};
+const receiptSearch = async (file: File) => {
+  receiptFindLoading.value = true;
+
+  try {
+    const result = await $api.parser.qr(file);
+    const params = jsonToQueryString(result);
+    router.push(`/manage/${id}/find?${params}`);
+  } catch (e) {
+    console.log(e);
+    toast.error(
+      "Данных на чеке не найдено. Попробуйте найти транзакцию вручную."
+    );
+  }
+
+  receiptFindLoading.value = false;
 };
 
 onMounted(() => {
@@ -62,6 +89,9 @@ onMounted(() => {
       color: "primary",
     },
     text: "Поиск по чеку",
+    events: {
+      click: openReceiptSearch,
+    },
   });
 });
 
@@ -161,5 +191,10 @@ const headers = [
         </v-btn>
       </template>
     </VDataTableServer>
+    <UploadReceipt
+      v-model="receiptFindOpened"
+      :loading="receiptFindLoading"
+      @save="receiptSearch"
+    />
   </div>
 </template>

@@ -1,3 +1,5 @@
+import moment from "moment";
+import { QrParseResult } from "~/types/parser";
 import { Transaction } from "~/types/transaction";
 import { normalizeDate } from "~/util/util";
 
@@ -67,6 +69,26 @@ export async function get_next_nonconfirmed_id(
     return -1;
   }
   return result.rows![0].id;
+}
+
+export async function find_by_qr(
+  db: ReturnType<typeof useDatabase>,
+  qr: QrParseResult
+) {
+  const date = moment(qr.t).format("YYYY-MM-DD");
+  const result =
+    await db.sql`SELECT * FROM transactions_view WHERE amount_in_account_currency = ${qr.s} and authorization_date = ${date}`;
+  const rows = result.rows as Transaction[];
+
+  return Promise.all(
+    rows.map(async (row) => {
+      row.creation_date = normalizeDate(row.creation_date);
+      row.authorization_date = normalizeDate(row.authorization_date);
+      row.transaction_date = normalizeDate(row.transaction_date);
+      row.tax_document_date = normalizeDate(row.tax_document_date);
+      return row;
+    })
+  );
 }
 
 export async function edit_transaction(
