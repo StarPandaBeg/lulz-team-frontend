@@ -201,6 +201,13 @@ const options = computed(() => ({
     },
   ],
 }));
+
+const debit = computed(() =>
+  chartData.value.map((cd) => cd.debit).reduce((a, b) => a + b, 0)
+);
+const credit = computed(() =>
+  chartData.value.map((cd) => cd.credit).reduce((a, b) => a + b, 0)
+);
 </script>
 
 <template>
@@ -235,6 +242,18 @@ const options = computed(() => ({
             {{ transactions.total }} (из них не подтверждено:
             {{ nonConfirmed }})
           </td>
+        </tr>
+        <tr>
+          <td>Затраты (дебит)</td>
+          <td>{{ debit.toFixed(2) }} руб.</td>
+        </tr>
+        <tr>
+          <td>Приход (кредит)</td>
+          <td>{{ credit.toFixed(2) }} руб.</td>
+        </tr>
+        <tr>
+          <td>Итог</td>
+          <td>{{ (credit - debit).toFixed(2) }} руб.</td>
         </tr>
       </tbody>
     </VTable>
