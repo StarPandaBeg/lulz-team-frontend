@@ -32,7 +32,7 @@ const isDragActive = rest.isDragActive;
 
 <style lang="scss">
 .dropzone {
-  padding: 20px 10px;
+  padding: 30px 20px;
   border: 2px dashed #bbb;
   border-radius: 5px;
   cursor: pointer;

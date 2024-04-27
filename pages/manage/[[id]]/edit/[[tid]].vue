@@ -254,8 +254,13 @@ onMounted(() => {
         <VWindow v-model="tab">
           <VWindowItem value="upload">
             <VRow>
-              <VCol>
-                <Dropzone accept="image/png" @upload="parseReceipt" />
+              <VCol class="d-flex flex-column align-center ga-4">
+                <VImg src="/images/hand.png" :width="128" />
+                <Dropzone
+                  class="w-100"
+                  accept="image/png"
+                  @upload="parseReceipt"
+                />
                 <p class="pt-3 text-medium-emphasis">
                   Вы можете выбрать файл с чеком, чтобы автоматически заполнить
                   некоторые поля
