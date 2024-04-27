@@ -4,6 +4,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   const auth = useAuthStore();
   const id = useCookie("user_id");
 
+  if (to.fullPath.includes("api")) {
+    return;
+  }
+
   if (to.fullPath == "/login") {
     if (id.value != undefined) {
       return navigateTo("/");
