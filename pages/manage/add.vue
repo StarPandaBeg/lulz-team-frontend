@@ -26,7 +26,7 @@ const save = async () => {
     const id = result.id;
     const parseResult = await $api.parser.uploadTrip(file.value!, id);
     if (parseResult.ok) {
-      toast.error("Успешно!");
+      toast.success("Успешно!");
       router.push(`/manage/${id}`);
     }
   } catch (e) {
