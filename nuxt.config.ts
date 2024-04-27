@@ -30,6 +30,9 @@ export default defineNuxtConfig({
     parserBaseUrl: process.env.PARSER_BASE_URL,
   },
   routeRules: {
-    "/api/parser/**": { proxy: `${process.env.PARSER_BASE_URL}/**` },
+    "/api/parser/qr": { proxy: `${process.env.PARSER_QR_BASE_URL}/qr` },
+    "/api/parser/add_new_komandirovaniy": {
+      proxy: `${process.env.PARSER_TABLE_BASE_URL}/add_new_komandirovaniy`,
+    },
   },
 });
