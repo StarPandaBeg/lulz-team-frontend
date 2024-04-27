@@ -38,6 +38,8 @@ const getReceipt = async (id: number) => {
 };
 const parseReceipt = async (file: File) => {
   try {
+    loading.value = true;
+
     const result = await $api.parser.qr(file);
     Object.assign(receipt.value, result);
     receipt.value.fd = result.i;
@@ -54,6 +56,7 @@ const parseReceipt = async (file: File) => {
       "К сожалению, не удалось обработать файл. Введите данные вручную"
     );
   }
+  loading.value = false;
 };
 
 const trip = ref<Trip>(await $api.trips.getById(id));
@@ -61,6 +64,7 @@ const transaction = ref<Transaction>(await $api.transactions.getById(tid, id));
 const receipt = ref<Receipt>(await getReceipt(tid));
 const currencies = ref(await $api.currencies.list());
 const confirmationOpened = ref<boolean>();
+const loading = ref<boolean>();
 const router = useRouter();
 
 type TabValues =
@@ -81,6 +85,8 @@ const trySave = () => {
 
 const save = async () => {
   try {
+    loading.value = true;
+
     transaction.value.creation_date = normalizeDate(
       transaction.value.creation_date
     );
@@ -106,6 +112,7 @@ const save = async () => {
     console.log(e);
     toast.error("При сохранении данных произошла ошибка");
   }
+  loading.value = false;
 };
 
 const hasPrev = computed(() => tabs.indexOf(tab.value!) > 0);
@@ -129,6 +136,7 @@ const nextOrSave = async () => {
 
 const tryFillCounterparty = async () => {
   try {
+    loading.value = true;
     const result = await $api.counterparties.find(
       transaction.value.counterparty_inn
     );
@@ -137,6 +145,7 @@ const tryFillCounterparty = async () => {
   } catch {
     toast.warning("Контрагент не найден");
   }
+  loading.value = false;
 };
 
 onMounted(() => {
@@ -197,7 +206,7 @@ onMounted(() => {
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <VCard class="mt-3">
+    <VCard class="mt-3" :loading="loading">
       <v-tabs v-model="tab" color="primary">
         <v-tab value="upload">Загрузка чека</v-tab>
         <v-tab value="general">Общая информация</v-tab>
