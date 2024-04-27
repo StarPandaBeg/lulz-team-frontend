@@ -27,5 +27,9 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL,
     },
     postgresConnectionUrl: process.env.POSTGRES_URL,
+    parserBaseUrl: process.env.PARSER_BASE_URL,
+  },
+  routeRules: {
+    "/api/parser/**": { proxy: `${process.env.PARSER_BASE_URL}/**` },
   },
 });
