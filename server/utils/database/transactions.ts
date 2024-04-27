@@ -56,6 +56,19 @@ export async function count_nonconfirmed_transactions_for(
   return parseInt(result.rows[0].count_noncorfirmed_transactions);
 }
 
+export async function get_next_nonconfirmed_id(
+  db: ReturnType<typeof useDatabase>,
+  id: number,
+  skip: number
+) {
+  const result =
+    await db.sql`SELECT id FROM transactions_view WHERE confirmation_status = 'fail' AND komandirovka_id=${id} AND id != ${skip} LIMIT 1`;
+  if (result.rows!.length == 0) {
+    return -1;
+  }
+  return result.rows![0].id;
+}
+
 export async function edit_transaction(
   db: ReturnType<typeof useDatabase>,
   id: number,

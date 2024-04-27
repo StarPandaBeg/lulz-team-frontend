@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import moment from "moment";
 import { useToast } from "vue-toastification";
+import { useBulkStore } from "~/store/bulk";
 import { useTitledPageStore } from "~/store/titled";
 import type { QrParseResult } from "~/types/parser";
 import type { Receipt } from "~/types/receipt";
@@ -18,6 +19,7 @@ useHead({
 });
 
 const templateStore = useTitledPageStore();
+const bulk = useBulkStore();
 const toast = useToast();
 const { $api } = useNuxtApp();
 const route = useRoute();
@@ -80,6 +82,7 @@ const fillReceipt = (result: QrParseResult) => {
 const trip = ref<Trip>(await $api.trips.getById(id));
 const transaction = ref<Transaction>(await $api.transactions.getById(tid, id));
 const receipt = ref<Receipt>(await getReceipt(tid));
+const nextNonConfirmedId = ref<number>(await $api.transactions.next(id, tid));
 const currencies = ref(await $api.currencies.list());
 const confirmationOpened = ref<boolean>();
 const loading = ref<boolean>();
@@ -129,7 +132,17 @@ const save = async () => {
     }
 
     toast.success("Сохранено!");
-    router.push(`/manage/${id}`);
+
+    if (bulk.bulk) {
+      if (nextNonConfirmedId.value == -1) {
+        router.push(`/manage/${id}`);
+      } else {
+        location.assign(`/manage/${id}/edit/${nextNonConfirmedId.value}`);
+        toast.success("Переходим к следующей записи!");
+      }
+    } else {
+      router.push(`/manage/${id}`);
+    }
   } catch (e) {
     console.log(e);
     toast.error("При сохранении данных произошла ошибка");

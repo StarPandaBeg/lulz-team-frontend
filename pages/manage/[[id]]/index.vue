@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import moment from "moment";
+import { useBulkStore } from "~/store/bulk";
 import { useTitledPageStore } from "~/store/titled";
 import type { PaginatedResult } from "~/types/common/result";
 import type { Transaction } from "~/types/transaction";
@@ -15,6 +16,7 @@ useHead({
 });
 
 const templateStore = useTitledPageStore();
+const bulk = useBulkStore();
 const { $api } = useNuxtApp();
 const route = useRoute();
 
@@ -24,12 +26,16 @@ const transactions = ref<PaginatedResult<Transaction>>(
   await $api.transactions.get(id, { page: 1, perPage: 10 })
 );
 const nonConfirmed = ref<number>(await $api.trips.nonConfirmed(id));
+const nextNonConfirmedId = ref<number>(await $api.transactions.next(id));
 
 const updateTable = async (options: { page: number; itemsPerPage: number }) => {
   transactions.value = await $api.transactions.get(id, {
     page: options.page,
     perPage: options.itemsPerPage,
   });
+};
+const withBulk = (state: boolean) => {
+  bulk.setBulkEdit(state);
 };
 
 onMounted(() => {
@@ -50,6 +56,12 @@ onMounted(() => {
       variant: "outlined",
     },
     text: "Отчет",
+  });
+  templateStore.addAction({
+    props: {
+      color: "primary",
+    },
+    text: "Поиск по чеку",
   });
 });
 
@@ -87,7 +99,12 @@ const headers = [
     <VAlert density="compact" type="warning" variant="outlined" closable>
       Есть неподтвержденные записи
       <template #append>
-        <VBtn variant="text">Подтвердить</VBtn>
+        <VBtn
+          :to="`/manage/${id}/edit/${nextNonConfirmedId}`"
+          variant="text"
+          @click="withBulk(true)"
+          >Подтвердить</VBtn
+        >
       </template>
     </VAlert>
     <VTable>
@@ -138,6 +155,7 @@ const headers = [
           min-width="36px"
           width="36px"
           title="Редактировать"
+          @click="withBulk(false)"
         >
           <v-icon>mdi-pencil</v-icon>
         </v-btn>

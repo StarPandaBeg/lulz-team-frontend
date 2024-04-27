@@ -37,6 +37,14 @@ class TransactionsModule extends HttpFactory {
     );
   }
 
+  next(id: number, skip: number = -1) {
+    const resource = this._getResource(id) + `/next`;
+    const fetchOptions: FetchOptions<"json"> = {
+      query: { skip },
+    };
+    return this.call<number>("GET", resource, undefined, fetchOptions);
+  }
+
   private _getResource(id: number) {
     return this.Resource.replace("{id}", id.toString());
   }
