@@ -29,6 +29,14 @@ const updateTable = async (options: { page: number; itemsPerPage: number }) => {
 onMounted(() => {
   templateStore.setTitle("Список командированных");
   templateStore.clearActions();
+
+  templateStore.addAction({
+    props: {
+      color: "primary",
+      to: "/manage/add",
+    },
+    text: "Добавить",
+  });
 });
 
 const headers = [
