@@ -27,12 +27,14 @@ export default defineNuxtConfig({
       apiBaseUrl: process.env.API_BASE_URL,
     },
     postgresConnectionUrl: process.env.POSTGRES_URL,
-    parserBaseUrl: process.env.PARSER_BASE_URL,
   },
   routeRules: {
-    "/api/parser/qr": { proxy: `${process.env.PARSER_QR_BASE_URL}/qr` },
+    "/api/parser/qr": { proxy: `${process.env.PARSER_BASE_URL}/qr` },
     "/api/parser/add_new_komandirovaniy": {
-      proxy: `${process.env.PARSER_TABLE_BASE_URL}/add_new_komandirovaniy`,
+      proxy: `${process.env.PARSER_BASE_URL}/add_new_komandirovaniy`,
+    },
+    "/api/parser/parseimg": {
+      proxy: `${process.env.PARSER_GPT_BASE_URL}/parseimg`,
     },
   },
 });
