@@ -1,6 +1,17 @@
-# Nuxt 3 Minimal Starter
+<br />
+<p align="center">
+   <a href="https://github.com/StarPandaBeg/lulz-team-frontend">
+    <img src=".github/logo.png" alt="Logo" width="128" height="128" />
+   </a>
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+   <h3 align="center">БухУчётКом - Frontend</h3>
+
+   <p align="center">
+    Проект для хакатона 2024</b>
+   </p>
+</p>
+
+
 
 ## Setup
 
@@ -71,5 +82,3 @@ yarn preview
 # bun
 bun run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
