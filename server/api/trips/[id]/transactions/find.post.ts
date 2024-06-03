@@ -22,6 +22,6 @@ export default defineEventHandler(async (event) => {
   );
 
   const db = useDatabase();
-  const transactions = await find_by_qr(db, query as QrParseResult);
+  const transactions = await find_by_qr(db, query as QrParseResult, params.id);
   return transactions;
 });
